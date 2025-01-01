@@ -1,34 +1,28 @@
-// src/users/users.controller.ts
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { Controller, Post, Body, HttpException, HttpStatus } from '@nestjs/common';
+import { UserService } from './users.service';
 import { User } from './user.entity';
 
 @Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+export class UserController {
+  constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: User) {
-    return this.usersService.create(createUserDto);
+  @Post('register')
+  async register(@Body() user: User): Promise<User> {
+    console.log('Requisição recebida:', user); // Adicione este log para verificar os dados recebidos
+    const existingUser = await this.userService.findOneByEmail(user.email);
+    if (existingUser) {
+      throw new HttpException('Email already exists', HttpStatus.BAD_REQUEST);
+    }
+    return this.userService.create(user);
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.usersService.findOne(id);
-  }
-
-  @Put(':id')
-  update(@Param('id') id: number, @Body() updateUserDto: User) {
-    return this.usersService.update(id, updateUserDto);
-  }
-
-  @Delete(':id')
-  delete(@Param('id') id: number) {
-    return this.usersService.delete(id);
+  @Post('login')
+  async login(@Body() body: { email: string; password: string }): Promise<User> {
+    console.log('Requisição de login recebida:', body); // Adicione este log para verificar os dados recebidos
+    const user = await this.userService.findOneByEmail(body.email);
+    if (!user || user.password !== body.password) {
+      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+    }
+    return user;
   }
 }
