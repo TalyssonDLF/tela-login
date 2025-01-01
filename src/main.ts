@@ -11,8 +11,6 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.setGlobalPrefix('api'); // Adiciona o prefixo 'api' a todas as rotas
-
   await app.listen(3000, () => {
     console.log('Servidor rodando em http://localhost:3000');
   });

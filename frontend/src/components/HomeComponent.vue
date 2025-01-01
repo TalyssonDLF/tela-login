@@ -1,19 +1,57 @@
 <template>
   <div class="container">
-    <header>
-      <router-link to="/perfil" class="perfil-icon">Perfil</router-link>
-    </header>
-    <h1>Bem-vindo!</h1>
-    <button @click="abrirListaUsuarios">Abrir Lista de Usuários</button>
+    <div class="header">
+      <h1>Bem-vindo!</h1>
+      <font-awesome-icon icon="user" class="profile-icon" @click="irParaPerfil" />
+    </div>
+    <div class="cep-container">
+      <label for="cep">CEP:</label>
+      <input type="text" id="cep" v-model="cep" placeholder="Digite o CEP" />
+      <button @click="verificarCep">Verificar CEP</button>
+      <p v-if="logradouro">Logradouro: {{ logradouro }}</p>
+    </div>
   </div>
 </template>
 
 <script>
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+library.add(faUser);
+
 export default {
   name: 'HomeComponent',
+  components: {
+    FontAwesomeIcon
+  },
+  data() {
+    return {
+      cep: '',
+      logradouro: ''
+    };
+  },
   methods: {
-    abrirListaUsuarios() {
-      alert("Lista de usuários será aberta aqui.");
+    irParaPerfil() {
+      this.$router.push('/perfil');
+    },
+    async verificarCep() {
+      if (this.cep.length !== 8) {
+        alert('Por favor, insira um CEP válido com 8 dígitos.');
+        return;
+      }
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${this.cep}/json/`);
+        const data = await response.json();
+        if (data.erro) {
+          alert('CEP não encontrado.');
+          this.logradouro = '';
+        } else {
+          this.logradouro = data.logradouro;
+        }
+      } catch (error) {
+        alert('Erro ao buscar o CEP.');
+      }
     }
   }
 };
@@ -21,43 +59,68 @@ export default {
 
 <style scoped>
 .container {
-  max-width: 600px;
+  max-width: 500px;
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+  background-color: #f9f9f9;
 }
 
-header {
-  width: 100%;
+.header {
   display: flex;
-  justify-content: flex-end;
-  padding: 10px;
-  background-color: #f0f0f0;
-}
-
-.perfil-icon {
-  text-decoration: none;
-  color: #000;
-  font-weight: bold;
+  justify-content: space-between;
+  align-items: center;
 }
 
 h1 {
-  text-align: center;
+  color: #333;
+}
+
+.profile-icon {
+  font-size: 24px;
+  cursor: pointer;
+  color: #007bff;
+}
+
+.profile-icon:hover {
+  color: #0056b3;
+}
+
+.cep-container {
+  margin-top: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: calc(100% - 22px);
 }
 
 button {
   padding: 10px;
-  background-color: #007bff;
+  background-color: #28a745;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #218838;
+}
+
+p {
+  margin-top: 10px;
+  color: #555;
 }
 </style>

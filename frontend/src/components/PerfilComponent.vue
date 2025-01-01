@@ -5,6 +5,8 @@
     <p>Idade: {{ user.idade }}</p>
     <p>Email: {{ user.email }}</p>
     <button @click="voltarParaHome">Voltar para Home</button>
+    <button @click="logout">Logout</button>
+    <button @click="editarInformacoes">Editar Informações</button>
   </div>
 </template>
 
@@ -22,11 +24,15 @@ export default {
   },
   async created() {
     try {
-      const response = await fetch('http://localhost:3000/users/profile', {
+      const userId = localStorage.getItem('userId'); // Supondo que o ID do usuário esteja armazenado no localStorage
+      if (!userId) {
+        alert('Usuário não encontrado.');
+        return;
+      }
+      const response = await fetch(`http://localhost:3000/users/${userId}`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Supondo que o token JWT esteja armazenado no localStorage
+          'Content-Type': 'application/json'
         }
       });
       const data = await response.json();
@@ -41,7 +47,14 @@ export default {
   },
   methods: {
     voltarParaHome() {
+      this.$router.push('/home');
+    },
+    logout() {
+      localStorage.removeItem('userId');
       this.$router.push('/');
+    },
+    editarInformacoes() {
+      this.$router.push('/editar-perfil');
     }
   }
 };
@@ -76,6 +89,7 @@ button {
   border-radius: 5px;
   cursor: pointer;
   margin-top: 20px;
+  margin-right: 10px;
 }
 
 button:hover {

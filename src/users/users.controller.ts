@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from './users.service';
 import { User } from './user.entity';
 
@@ -17,12 +17,31 @@ export class UserController {
   }
 
   @Post('login')
-  async login(@Body() body: { email: string; password: string }): Promise<User> {
+  async login(@Body() body: { email: string; password: string }): Promise<{ id: number }> {
     console.log('Requisição de login recebida:', body); // Adicione este log para verificar os dados recebidos
     const user = await this.userService.findOneByEmail(body.email);
     if (!user || user.password !== body.password) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
+    return { id: user.id };
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: number): Promise<User> {
+    const user = await this.userService.findOne(id);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     return user;
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() user: User): Promise<User> {
+    const existingUser = await this.userService.findOne(id);
+    if (!existingUser) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    await this.userService.update(id, user);
+    return this.userService.findOne(id);
   }
 }

@@ -47,7 +47,7 @@ export default {
         password: this.password
       };
       try {
-        const response = await fetch('http://localhost:3000/api/users/register', {
+        const response = await fetch('http://localhost:3000/users/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -56,6 +56,7 @@ export default {
         });
         const data = await response.json();
         if (response.ok) {
+          localStorage.setItem('userId', data.id); // Armazena o ID do usuário no localStorage
           alert('Cadastro bem-sucedido!');
           this.$router.push('/');
         } else {
