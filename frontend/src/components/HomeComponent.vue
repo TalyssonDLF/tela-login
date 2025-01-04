@@ -17,6 +17,7 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { useToast } from 'vue-toastification';
 
 library.add(faUser);
 
@@ -36,21 +37,22 @@ export default {
       this.$router.push('/perfil');
     },
     async verificarCep() {
+      const toast = useToast();
       if (this.cep.length !== 8) {
-        alert('Por favor, insira um CEP válido com 8 dígitos.');
+        toast.error('Por favor, insira um CEP válido com 8 dígitos.');
         return;
       }
       try {
         const response = await fetch(`https://viacep.com.br/ws/${this.cep}/json/`);
         const data = await response.json();
         if (data.erro) {
-          alert('CEP não encontrado.');
+          toast.error('CEP não encontrado.');
           this.logradouro = '';
         } else {
           this.logradouro = data.logradouro;
         }
       } catch (error) {
-        alert('Erro ao buscar o CEP.');
+        toast.error('Erro ao buscar o CEP.');
       }
     }
   }

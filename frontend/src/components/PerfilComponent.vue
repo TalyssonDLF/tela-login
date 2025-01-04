@@ -5,8 +5,8 @@
     <p>Idade: {{ user.idade }}</p>
     <p>Email: {{ user.email }}</p>
     <button @click="voltarParaHome">Voltar para Home</button>
-    <button @click="logout">Logout</button>
     <button @click="editarInformacoes">Editar Informações</button>
+    <button class="logout" @click="logout">Logout</button>
   </div>
 </template>
 
@@ -94,5 +94,9 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+.logout {
+  background-color: red;
 }
 </style>

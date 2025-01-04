@@ -1,20 +1,26 @@
 <template>
-  <div class="container">
-    <h1>Login</h1>
-    <form @submit.prevent="login">
-      <label for="email">Email:</label>
-      <input type="email" id="email" v-model="email" required>
-      <br>
-      <label for="password">Senha:</label>
-      <input type="password" id="password" v-model="password" required>
-      <br>
-      <button type="submit">Login</button>
-    </form>
-    <button class="cadastro-button" @click="irParaCadastro">Cadastrar</button>
+  <div class="login-container">
+    <div class="login-box">
+      <h1>Login</h1>
+      <form @submit.prevent="login">
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" v-model="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Senha:</label>
+          <input type="password" id="password" v-model="password" required>
+        </div>
+        <button type="submit" class="btn">Login</button>
+      </form>
+      <button class="btn cadastro-button" @click="irParaCadastro">Cadastrar</button>
+    </div>
   </div>
 </template>
 
 <script>
+import { useToast } from 'vue-toastification';
+
 export default {
   name: 'LoginComponent',
   data() {
@@ -25,11 +31,13 @@ export default {
   },
   methods: {
     async login() {
+      const toast = useToast();
       const credentials = {
         email: this.email,
         password: this.password
       };
       try {
+        console.log('Tentando fazer login com as credenciais', credentials);
         const response = await fetch('http://localhost:3000/users/login', {
           method: 'POST',
           headers: {
@@ -38,15 +46,17 @@ export default {
           body: JSON.stringify(credentials)
         });
         const data = await response.json();
+        console.log('Resposta da API:', data);
         if (response.ok) {
           localStorage.setItem('userId', data.id); // Armazena o ID do usuário no localStorage
-          alert('Login bem-sucedido!');
+          toast.success('Login bem-sucedido!');
           this.$router.push('/home'); // Redireciona para a tela de home após o login
         } else {
-          alert(data.message);
+          toast.error(data.message);
         }
       } catch (error) {
-        alert('Erro ao fazer login.');
+        console.error('Erro ao fazer login:', error);
+        toast.error('Erro ao fazer login.');
       }
     },
     irParaCadastro() {
@@ -57,44 +67,50 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  max-width: 500px; /* Aumentar a largura da div */
-  margin: 0 auto;
-  padding: 40px; /* Aumentar o padding */
-  border: 1px solid #ccc;
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.login-box {
+  background-color: #fff;
+  padding: 40px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
 }
 
 h1 {
-  text-align: center;
-  color: #333;
   margin-bottom: 20px;
+  color: #333;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
 }
 
 label {
-  margin: 10px 0 5px;
+  display: block;
+  margin-bottom: 5px;
   color: #555;
 }
 
 input {
+  width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-bottom: 20px;
+  box-sizing: border-box;
 }
 
-button {
+.btn {
+  width: 100%;
   padding: 10px;
   background-color: #007bff;
   color: #fff;
@@ -104,14 +120,11 @@ button {
   margin-top: 10px;
 }
 
-button:hover {
+.btn:hover {
   background-color: #0056b3;
 }
 
 .cadastro-button {
-  display: block;
-  width: 100%;
-  margin-top: 20px;
   background-color: #28a745;
 }
 
