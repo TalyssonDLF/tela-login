@@ -46,11 +46,10 @@ export default {
           body: JSON.stringify(credentials)
         });
         const data = await response.json();
-        console.log('Resposta da API:', data);
         if (response.ok) {
           localStorage.setItem('userId', data.id); // Armazena o ID do usuário no localStorage
           toast.success('Login bem-sucedido!');
-          this.$router.push('/home'); // Redireciona para a tela de home após o login
+          this.$router.push('/home');
         } else {
           toast.error(data.message);
         }

@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from './users.controller'; // Corrigido para UserController
-import { UserService } from './users.service'; // Certifique-se de que o UserService está sendo importado corretamente
+import { UserController } from './users.controller'; 
+import { UserService } from './users.service'; 
 
 describe('UserController', () => {
   let controller: UserController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserController], // Corrigido para UserController
-      providers: [UserService], // Adicione o UserService como um provedor
+      controllers: [UserController], 
+      providers: [UserService], 
     }).compile();
 
-    controller = module.get<UserController>(UserController); // Corrigido para UserController
+    controller = module.get<UserController>(UserController); 
   });
 
   it('should be defined', () => {

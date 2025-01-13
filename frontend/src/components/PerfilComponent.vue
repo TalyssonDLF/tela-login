@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { useToast } from 'vue-toastification';
 export default {
   name: 'PerfilComponent',
   data() {
@@ -23,10 +24,11 @@ export default {
     };
   },
   async created() {
+    const toast = useToast();
     try {
       const userId = localStorage.getItem('userId'); // Supondo que o ID do usuário esteja armazenado no localStorage
       if (!userId) {
-        alert('Usuário não encontrado.');
+        toast.error('Usuário não encontrado.');
         return;
       }
       const response = await fetch(`http://localhost:3000/users/${userId}`, {
@@ -42,7 +44,7 @@ export default {
         alert(data.message);
       }
     } catch (error) {
-      alert('Erro ao buscar dados do perfil.');
+      toast.error('Erro ao buscar dados do perfil.');
     }
   },
   methods: {

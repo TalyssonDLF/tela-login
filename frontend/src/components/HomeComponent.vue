@@ -9,6 +9,10 @@
       <input type="text" id="cep" v-model="cep" placeholder="Digite o CEP" />
       <button @click="verificarCep">Verificar CEP</button>
       <p v-if="logradouro">Logradouro: {{ logradouro }}</p>
+      <p v-if="bairro">Bairro: {{ bairro }}</p>
+      <p v-if="cidade">Cidade: {{ cidade }}</p>
+      <p v-if="uf">UF: {{ uf }}</p>
+      <p v-if="codigoIBGE">Código do IBGE: {{ codigoIBGE }}</p>
     </div>
   </div>
 </template>
@@ -29,7 +33,11 @@ export default {
   data() {
     return {
       cep: '',
-      logradouro: ''
+      logradouro: '',
+      uf: '',
+      bairro: '',
+      cidade: '',
+      codigoIBGE: ''
     };
   },
   methods: {
@@ -47,13 +55,25 @@ export default {
         const data = await response.json();
         if (data.erro) {
           toast.error('CEP não encontrado.');
-          this.logradouro = '';
+          this.limparDados();
         } else {
-          this.logradouro = data.logradouro;
+          this.logradouro = data.logradouro || 'Não informado';
+          this.uf = data.uf || 'Não informado';
+          this.bairro = data.bairro || 'Não informado';
+          this.cidade = data.localidade || 'Não informado';
+          this.codigoIBGE = data.ibge || 'Não informado';
         }
       } catch (error) {
         toast.error('Erro ao buscar o CEP.');
+        this.limparDados();
       }
+    },
+    limparDados() {
+      this.logradouro = '';
+      this.uf = '';
+      this.bairro = '';
+      this.cidade = '';
+      this.codigoIBGE = '';
     }
   }
 };

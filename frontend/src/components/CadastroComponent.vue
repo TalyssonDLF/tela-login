@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { useToast } from 'vue-toastification';
 export default {
   name: 'CadastroComponent',
   data() {
@@ -36,8 +37,9 @@ export default {
   },
   methods: {
     async cadastrar() {
+      const toast = useToast();
       if (this.password !== this.confirmPassword) {
-        alert('As senhas não coincidem.');
+        toast.error('As senhas não coincidem.');
         return;
       }
       const user = {
@@ -57,13 +59,13 @@ export default {
         const data = await response.json();
         if (response.ok) {
           localStorage.setItem('userId', data.id); // Armazena o ID do usuário no localStorage
-          alert('Cadastro bem-sucedido!');
+          toast.success('Cadastro bem-sucedido!');
           this.$router.push('/');
         } else {
           alert(data.message);
         }
       } catch (error) {
-        alert('Erro ao cadastrar.');
+        toast.error('Erro ao cadastrar.');
       }
     }
   }
