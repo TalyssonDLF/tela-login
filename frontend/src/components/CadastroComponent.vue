@@ -58,7 +58,7 @@ export default {
         });
         const data = await response.json();
         if (response.ok) {
-          localStorage.setItem('userId', data.id); // Armazena o ID do usuário no localStorage
+          localStorage.setItem('userId', data.id);
           toast.success('Cadastro bem-sucedido!');
           this.$router.push('/');
         } else {

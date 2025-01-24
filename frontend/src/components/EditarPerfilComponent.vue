@@ -35,7 +35,7 @@
     },
     async created() {
       try {
-        const userId = localStorage.getItem('userId'); // Supondo que o ID do usuário esteja armazenado no localStorage
+        const userId = localStorage.getItem('userId'); 
         if (!userId) {
           alert('Usuário não encontrado.');
           return;
@@ -58,7 +58,7 @@
     },
     methods: {
       async editarPerfil() {
-        const userId = localStorage.getItem('userId'); // Supondo que o ID do usuário esteja armazenado no localStorage
+        const userId = localStorage.getItem('userId'); 
         try {
           const response = await fetch(`http://localhost:3000/users/${userId}`, {
             method: 'PUT',

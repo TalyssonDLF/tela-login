@@ -10,7 +10,7 @@ export class UserController {
 
   @Post('register')
   async register(@Body() user: User): Promise<User> {
-    console.log('Requisição recebida:', user); // Adicione este log para verificar os dados recebidos
+    console.log('Requisição recebida:', user); 
     const existingUser = await this.userService.findOneByEmail(user.email);
     if (existingUser) {
       throw new HttpException('Email already exists', HttpStatus.BAD_REQUEST);
@@ -20,7 +20,7 @@ export class UserController {
 
   @Post('login')
   async login(@Body() body: { email: string; password: string }): Promise<{ id: number }> {
-    console.log('Requisição de login recebida:', body); // Adicione este log para verificar os dados recebidos
+    console.log('Requisição de login recebida:', body);
     const user = await this.userService.findOneByEmail(body.email);
     if (!user || user.password !== body.password) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);

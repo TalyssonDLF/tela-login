@@ -26,7 +26,7 @@ export default {
   async created() {
     const toast = useToast();
     try {
-      const userId = localStorage.getItem('userId'); // Supondo que o ID do usuário esteja armazenado no localStorage
+      const userId = localStorage.getItem('userId');
       if (!userId) {
         toast.error('Usuário não encontrado.');
         return;
